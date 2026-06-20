@@ -1,0 +1,540 @@
+<?xml version="1.0"?>
+<sdf version="1.9" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Declare variables -->
+  <!-- Constants -->
+  <xacro:property name="PI" value="3.1415926535"/>
+
+  <!-- Pedestal -->
+  <xacro:property name="pedestal_length" value="0.300"/>
+  <xacro:property name="pedestal_width" value="0.200"/>
+  <xacro:property name="pedestal_height" value="0.725"/>
+
+  <!-- Table -->
+  <xacro:property name="table_length" value="1.20"/>
+  <xacro:property name="table_width" value="0.70"/>
+  <xacro:property name="table_height" value="0.725"/>
+
+  <!-- Scissors -->
+  <xacro:property name="scissors_boundx" value="0.06187911987"/>
+  <xacro:property name="scissors_boundy" value="0.1317644386"/>
+  <xacro:property name="scissors_boundz" value="0.003562496185"/>
+  <xacro:property name="scissors_mass" value="0.02560"/>
+  <xacro:property name="scissors_ixx" value="0.0000310629"/>
+  <xacro:property name="scissors_ixy" value="-0.0000001477"/>
+  <xacro:property name="scissors_ixz" value="-0.0000000005"/>
+  <xacro:property name="scissors_iyy" value="0.0000034702"/>
+  <xacro:property name="scissors_iyz" value="-0.0000001029"/>
+  <xacro:property name="scissors_izz" value="0.0000345011"/>
+
+  <!-- Needle Holder -->
+  <xacro:property name="needleholder_boundx" value="0.07185502625"/>
+  <xacro:property name="needleholder_boundy" value="0.1464822884"/>
+  <xacro:property name="needleholder_boundz" value="0.002954005241"/>
+  <xacro:property name="needleholder_mass" value="0.02683"/>
+  <xacro:property name="needleholder_ixx" value="0.0000400372"/>
+  <xacro:property name="needleholder_ixy" value="0.0000000658"/>
+  <xacro:property name="needleholder_ixz" value="0.0000000005"/>
+  <xacro:property name="needleholder_iyy" value="0.0000062838"/>
+  <xacro:property name="needleholder_iyz" value="0.0000000016"/>
+  <xacro:property name="needleholder_izz" value="0.0000462854"/>
+
+  <!-- Retractor -->
+  <xacro:property name="retractor_boundx" value="0.09746628189"/>
+  <xacro:property name="retractor_boundy" value="0.1483472404"/>
+  <xacro:property name="retractor_boundz" value="0.01124949551"/>
+  <xacro:property name="retractor_mass" value="0.04748"/>
+  <xacro:property name="retractor_ixx" value="0.0000643596"/>
+  <xacro:property name="retractor_ixy" value="0.0000018596"/>
+  <xacro:property name="retractor_ixz" value="-0.0000005092"/>
+  <xacro:property name="retractor_iyy" value="0.0000223688"/>
+  <xacro:property name="retractor_iyz" value="0.0000002668"/>
+  <xacro:property name="retractor_izz" value="0.0000865929"/>
+
+  <!-- Scalpel -->
+  <xacro:property name="scalpel_boundx" value="0.01594766235"/>
+  <xacro:property name="scalpel_boundy" value="0.1607148819"/>
+  <xacro:property name="scalpel_boundz" value="0.004270326138"/>
+  <xacro:property name="scalpel_mass" value="0.01688"/>
+  <xacro:property name="scalpel_ixx" value="0.0000202809"/>
+  <xacro:property name="scalpel_ixy" value="0.0000008633"/>
+  <xacro:property name="scalpel_ixz" value="0.0000000175"/>
+  <xacro:property name="scalpel_iyy" value="0.0000001375"/>
+  <xacro:property name="scalpel_iyz" value="-0.0000004026"/>
+  <xacro:property name="scalpel_izz" value="0.0000203822"/>
+
+  <!-- Tweezers -->
+  <xacro:property name="tweezers_boundx" value="0.02511442566"/>
+  <xacro:property name="tweezers_boundy" value="0.1713867569"/>
+  <xacro:property name="tweezers_boundz" value="0.01032558846"/>
+  <xacro:property name="tweezers_mass" value="0.03366"/>
+  <xacro:property name="tweezers_ixx" value="0.0000693277"/>
+  <xacro:property name="tweezers_ixy" value="0.0000023808"/>
+  <xacro:property name="tweezers_ixz" value="-0.0000000507"/>
+  <xacro:property name="tweezers_iyy" value="0.0000021973"/>
+  <xacro:property name="tweezers_iyz" value="0.0000014302"/>
+  <xacro:property name="tweezers_izz" value="0.0000711197"/>
+
+  <world name='test_world'>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <!-- ================= PEDESTAL ================= -->
+    <model name='Pedestal_001'>
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose>
+      <self_collide>false</self_collide>
+      
+        <link name='link'>
+          <pose>0 0 ${pedestal_height/2} 0 0 ${PI/2}</pose>
+          <collision name='collision'>
+            <pose>0 0 0 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>${pedestal_length} ${pedestal_width} ${pedestal_height}</size>
+              </box>
+            </geometry>
+
+            <surface>
+              <contact>
+                <ode>
+                  <max_vel>0.01</max_vel>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+
+          <visual name='visual'>
+            <geometry>
+              <box>
+                <size>${pedestal_length} ${pedestal_width} ${pedestal_height}</size>
+              </box>
+            </geometry>
+            <material>
+              <ambient>1 0.651 0 1</ambient>
+              <diffuse>1 0.651 0 1</diffuse>
+              <specular>0.1 0.1 0.1 1</specular>
+              <emissive>0 0 0 0</emissive>
+            </material>
+            <meta>
+              <layer>1</layer>
+            </meta>
+          </visual>
+        </link>
+        <static>true</static>
+    </model>
+
+    <!-- ================= REGULAR TABLE 1 ================= -->
+    <model name='RegularTable001_01'>
+      <static>true</static>
+      <pose>0 ${pedestal_length/2 + table_width/2 + 0.04} 0 0 0 0</pose>
+      <self_collide>false</self_collide>
+
+        <link name='link'>
+          <collision name='collision'>
+            <!-- Shift collision box up to match visual's origin (height/2) -->
+            <pose>0 0 ${table_height/2} 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>${table_length} ${table_width} ${table_height}</size>
+              </box>
+            </geometry>
+
+            <surface>
+              <contact>
+                <ode>
+                  <max_vel>0.01</max_vel>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+
+          <visual name='visual'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/RegularTable001.dae</uri>
+              </mesh>
+            </geometry>
+            <meta>
+              <layer>1</layer>
+            </meta>
+          </visual>
+          
+        </link>
+        <static>true</static>
+    </model>
+
+    <!-- ================= REGULAR TABLE 2 ================= -->
+    <model name='RegularTable001_02'>
+      <static>true</static>
+      <pose>0 ${-1 * (pedestal_length/2 + table_width/2 + 0.04)} 0 0 0 0</pose>
+      <self_collide>false</self_collide>
+
+        <link name='link'>
+          <collision name='collision'>
+            <pose>0 0 ${table_height/2} 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>${table_length} ${table_width} ${table_height}</size>
+              </box>
+            </geometry>
+
+            <surface>
+              <contact>
+                <ode>
+                  <max_vel>0.01</max_vel>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+
+          <visual name='visual'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/RegularTable001.dae</uri>
+              </mesh>
+            </geometry>
+            <meta>
+              <layer>1</layer>
+            </meta>
+          </visual>
+          
+        </link>
+        <static>true</static>
+    </model>
+
+    <!-- ================= NEEDLE HOLDER 1 ================= -->
+    <model name='NeedleHolder_001'>
+      <pose>0 0.214 0.8 0 0 0</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+
+        <link name='link'>
+          <inertial>
+            <mass>${needleholder_mass}</mass>
+            <inertia>
+              <ixx>${needleholder_ixx}</ixx>
+              <ixy>${needleholder_ixy}</ixy>
+              <ixz>${needleholder_ixz}</ixz>
+              <iyy>${needleholder_iyy}</iyy>
+              <iyz>${needleholder_iyz}</iyz>
+              <izz>${needleholder_izz}</izz>
+            </inertia>
+          </inertial>
+
+          <collision name='collision'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/NeedleHolder/NeedleHolderCollision.dae</uri>
+                <scale>1 1 1</scale>
+              </mesh>
+            </geometry>
+            <surface>
+              <contact>
+                <ode>
+                  <max_vel>0.01</max_vel>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+
+          <visual name='visual'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/NeedleHolder/NeedleHolder.dae</uri>
+              </mesh>
+            </geometry>
+            <meta>
+              <layer>1</layer>
+            </meta>
+          </visual>
+
+        </link>
+    </model>
+
+    <!-- ================= RETRACTOR 1 ================= -->
+    <model name='Retractor_001'>
+      <pose>0.02 0.214 0.8 0 0 0</pose>
+      <self_collide>false</self_collide>
+      <static>false</static>
+
+        <link name='link'>
+          <inertial>
+            <mass>${retractor_mass}</mass>
+            <inertia>
+              <ixx>${retractor_ixx}</ixx>
+              <ixy>${retractor_ixy}</ixy>
+              <ixz>${retractor_ixz}</ixz>
+              <iyy>${retractor_iyy}</iyy>
+              <iyz>${retractor_iyz}</iyz>
+              <izz>${retractor_izz}</izz>
+            </inertia>
+          </inertial>
+
+          <collision name='collision'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/Retractor/RetractorCollision.dae</uri>
+                <scale>1 1 1</scale>
+              </mesh>
+            </geometry>
+            <surface>
+              <contact>
+                <ode>
+                  <max_vel>0.01</max_vel>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+
+          <visual name='visual'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/Retractor/Retractor.dae</uri>
+              </mesh>
+            </geometry>
+            <meta>
+              <layer>1</layer>
+            </meta>
+          </visual>
+
+        </link>
+    </model>
+
+    <!-- ================= SCALPEL 1 ================= -->
+    <model name='Scalpel_001'>
+      <pose>0.02 0.294 0.8 0 0 0</pose>
+      <self_collide>false</self_collide>
+      <static>false</static>
+      
+        <link name='link'>
+          <inertial>
+            <mass>${scalpel_mass}</mass>
+            <inertia>
+              <ixx>${scalpel_ixx}</ixx>
+              <ixy>${scalpel_ixy}</ixy>
+              <ixz>${scalpel_ixz}</ixz>
+              <iyy>${scalpel_iyy}</iyy>
+              <iyz>${scalpel_iyz}</iyz>
+              <izz>${scalpel_izz}</izz>
+            </inertia>
+          </inertial>
+
+          <collision name='collision'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/Scalpel/ScalpelCollision.dae</uri>
+                <scale>1 1 1</scale>
+              </mesh>
+            </geometry>
+            <surface>
+              <contact>
+                <ode>
+                  <max_vel>0.01</max_vel>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+
+          <visual name='visual'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/Scalpel/Scalpel.dae</uri>
+              </mesh>
+            </geometry>
+            <meta>
+              <layer>1</layer>
+            </meta>
+          </visual>
+
+        </link>
+    </model>
+
+    <!-- ================= SCISSORS ================= -->
+    <model name='Scissors_001'>
+      <pose>0.04 0.294 0.8 0 0 0</pose>
+      <self_collide>false</self_collide>
+      <static>false</static>
+
+        <link name='link'>
+          <inertial>
+            <mass>${scissors_mass}</mass>
+            <inertia>
+              <ixx>${scissors_ixx}</ixx>
+              <ixy>${scissors_ixy}</ixy>
+              <ixz>${scissors_ixz}</ixz>
+              <iyy>${scissors_iyy}</iyy>
+              <iyz>${scissors_iyz}</iyz>
+              <izz>${scissors_izz}</izz>
+            </inertia>
+          </inertial>
+
+          <collision name='collision'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/Scissors/ScissorsCollision.dae</uri>
+                <scale>1 1 1</scale>
+              </mesh>
+            </geometry>
+            <surface>
+              <contact>
+                <ode>
+                  <max_vel>0.01</max_vel>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+
+          <visual name='visual'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/Scissors/Scissors.dae</uri>
+              </mesh>
+            </geometry>
+            <meta>
+              <layer>1</layer>
+            </meta>
+          </visual>
+
+        </link>
+    </model>
+
+    <!-- ================= TWEEZERS 1 ================= -->
+    <model name='Tweezers_001'>
+      <pose>0.374 0.194 0.8 0 0 0</pose>
+      <self_collide>false</self_collide>
+      <static>false</static>
+
+        <link name='link'>
+          <inertial>
+            <mass>${tweezers_mass}</mass>
+            <inertia>
+              <ixx>${tweezers_ixx}</ixx>
+              <ixy>${tweezers_ixy}</ixy>
+              <ixz>${tweezers_ixz}</ixz>
+              <iyy>${tweezers_iyy}</iyy>
+              <iyz>${tweezers_iyz}</iyz>
+              <izz>${tweezers_izz}</izz>
+            </inertia>
+          </inertial>
+
+          <collision name='collision'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/Tweezers/TweezersCollision.dae</uri>
+                <scale>1 1 1</scale>
+              </mesh>
+            </geometry>
+            <surface>
+              <contact>
+                <ode>
+                  <max_vel>0.01</max_vel>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+
+          <visual name='visual'>
+            <geometry>
+              <mesh>
+                <uri>model://thesis/DAE/Tweezers/Tweezers.dae</uri>
+              </mesh>
+            </geometry>
+            <meta>
+              <layer>1</layer>
+            </meta>
+          </visual>
+
+        </link>
+    </model>
+
+    <!-- ================= GROUND PLANE ================= -->
+    <model name='ground_plane'>
+      <static>true</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1 1</size>
+            </plane>
+          </geometry>
+
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        
+        <visual name='visual'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+
+        <pose>0 0 0 0 -0 0</pose>
+
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+
+        <enable_wind>false</enable_wind>
+      </link>
+
+      <pose>0 0 0 0 -0 0</pose>
+      <self_collide>false</self_collide>
+    </model>
+
+    <light name='sun' type='directional'>
+      <pose>0 0 10 0 -0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <intensity>1</intensity>
+      <direction>-0.5 0.1 -0.9</direction>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <linear>0.01</linear>
+        <constant>0.90000000000000002</constant>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+  </world>
+</sdf>

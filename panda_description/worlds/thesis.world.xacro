@@ -1,0 +1,359 @@
+<?xml version="1.0"?>
+<sdf version="1.9" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Declare variables -->
+  <!-- Constants -->
+  <xacro:property name="PI" value="3.1415926535"/>
+
+  <!-- Pedestal -->
+  <xacro:property name="pedestal_length" value="0.230"/>
+  <xacro:property name="pedestal_width" value="0.195"/>
+  <xacro:property name="pedestal_height" value="0.725"/>
+  <xacro:property name="pedestal_offset_y" value="-0.04"/>
+
+  <!-- Table -->
+  <xacro:property name="table_length" value="0.445"/>
+  <xacro:property name="table_width" value="0.340"/>
+  <xacro:property name="table_height" value="0.725"/>
+  <xacro:property name="table_collision_z" value="${-1 * table_height/2 + 0.015}"/>
+
+  <!-- Drop Zone Table -->
+  <xacro:property name="drop_table_length" value="0.420"/>
+  <xacro:property name="drop_table_width" value="0.320"/>
+  <xacro:property name="drop_table_height" value="0.725"/>
+  <xacro:property name="drop_table_collision_z" value="${-1 * drop_table_height/2 + 0.015}"/>
+
+  <!-- Calculated positions -->
+  <xacro:property name="table1_x" value="${table_width/2 + 0.06}"/>
+  <xacro:property name="table1_y" value="${pedestal_length/2 + table_width/2 + pedestal_offset_y + 0.04 + 0.06}"/>
+  <xacro:property name="table2_x" value="${-1 * table_width/2 - 0.06}"/>
+  <xacro:property name="table2_y" value="${pedestal_length/2 + table_width/2 + pedestal_offset_y + 0.04 + 0.06}"/>
+  <xacro:property name="pedestal_center_z" value="${pedestal_height/2}"/>
+  <xacro:property name="drop_table_y" value="${-1 * (pedestal_length/2 + drop_table_width/2 + pedestal_offset_y + 0.1)}"/>
+
+  <world name='thesis'>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    
+    <!-- ================= SCENE CONFIGURATION ================= -->
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>false</shadows>
+      <grid>false</grid>
+      <!-- <sky></sky>  Remove sky to avoid ambient shadows -->
+    </scene>
+
+    <!-- ================= PEDESTAL ================= -->
+    <model name='pedestal'>
+      <static>true</static>
+      <pose>0 ${pedestal_offset_y} 0 0 0 0</pose>
+      
+      <link name='link'>
+        <pose>0 0 ${pedestal_height/2} 0 0 ${PI/2}</pose>
+        <collision name='collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>${pedestal_length} ${pedestal_width} ${pedestal_height}</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>${pedestal_length} ${pedestal_width} ${pedestal_height}</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0.5 0 1</ambient>
+            <diffuse>1 0.5 0 1</diffuse>
+          </material>
+          <meta>
+            <layer>1</layer>
+          </meta>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ================= REGULAR TABLE 1 ================= -->
+    <model name='table_1'>
+      <static>true</static>
+      <pose>${table1_x} ${table1_y} ${table_height} 0 0 0</pose>
+      <self_collide>false</self_collide>
+
+      <link name='link'>
+        <collision name='collision'>
+          <!-- Shift collision box up to match visual's origin (height/2) -->
+          <pose>0 0 ${table_collision_z} 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>${table_length} ${table_width} ${table_height}</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://thesis/DAE/RegularTable445x340Colored.dae</uri>
+            </mesh>
+          </geometry>
+          <meta>
+            <layer>1</layer>
+          </meta>
+        </visual>          
+      </link>
+    </model>
+
+    <!-- ================= REGULAR TABLE 2 ================= -->
+    <model name='table_2'>
+      <static>true</static>
+      <pose>${table2_x} ${table2_y} ${table_height} 0 0 0</pose>
+      <self_collide>false</self_collide>
+
+      <link name='link'>
+        <collision name='collision'>
+          <!-- Shift collision box up to match visual's origin (height/2) -->
+          <pose>0 0 ${table_collision_z} 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>${table_length} ${table_width} ${table_height}</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://thesis/DAE/RegularTable445x340Colored.dae</uri>
+            </mesh>
+          </geometry>
+          <meta>
+            <layer>1</layer>
+          </meta>
+        </visual>          
+      </link>
+    </model>
+
+    <!-- ================= DROP TABLE 1 ================= -->
+    <model name='drop_table_1'>
+      <static>true</static>
+      <pose>0 ${drop_table_y} ${drop_table_height} 0 0 0</pose>
+      <self_collide>false</self_collide>
+
+      <link name='link'>
+        <collision name='collision'>
+          <!-- Shift collision box up to match visual's origin (height/2) -->
+          <pose>0 0 ${drop_table_collision_z} 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>${drop_table_length} ${drop_table_width} ${drop_table_height}</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://thesis/DAE/RegularTable420x320Colored.dae</uri>
+            </mesh>
+          </geometry>
+          <meta>
+            <layer>1</layer>
+          </meta>
+        </visual>          
+      </link>
+    </model>
+
+    <!-- ================= HOSPITAL BED =================
+    <model name='hospital_bed'>
+      <static>true</static>
+      <pose>0 ${drop_table_y} ${drop_table_height} ${PI} 0 0</pose>
+      <self_collide>false</self_collide>
+
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://thesis/DAE/HospitalBed.dae</uri>
+            </mesh>
+          </geometry>
+          <meta>
+            <layer>1</layer>
+          </meta>
+        </visual>          
+      </link>
+    </model> -->
+
+    <!-- ================= GROUND PLANE ================= -->
+    <model name='ground_plane'>
+      <static>true</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1 1</size>
+            </plane>
+          </geometry>
+
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        
+        <visual name='visual'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+
+        <pose>0 0 0 0 -0 0</pose>
+
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+
+        <enable_wind>false</enable_wind>
+      </link>
+
+      <pose>0 0 0 0 -0 0</pose>
+      <self_collide>false</self_collide>
+    </model>
+
+    <!-- <light name="sun" type="directional">
+      <pose>0 0 10 0 -0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <intensity>1</intensity>
+      <direction>-0.5 0.1 -0.9</direction>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <linear>0.01</linear>
+        <constant>0.90000000000000002</constant>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light> -->
+
+    <!-- ================= OPERATING ROOM LIGHTING ================= -->
+    <!-- Main overhead light (surgical light) -->
+    <light name="overhead_light" type="directional">
+      <pose>0 0 3 0 0 0</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.2</intensity>
+      <direction>0 0 -1</direction>
+      <diffuse>0.95 0.95 0.95 1</diffuse>
+      <specular>0.5 0.5 0.5 1</specular>
+    </light>
+
+    <!-- Fill light from the front -->
+    <!-- <light name="front_light" type="directional">
+      <pose>0 1 1.5 0 0.5 0</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.2</intensity>
+      <direction>0 -0.5 -0.5</direction>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+    </light> -->
+
+    <!-- Fill light from left -->
+    <light name="left_fill" type="directional">
+      <pose>-1 0 1.5 0 0 0.3</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.2</intensity>
+      <direction>0.5 0 -0.5</direction>
+      <diffuse>0.85 0.85 0.85 1</diffuse>
+    </light>
+
+    <!-- Fill light from right -->
+    <light name="right_fill" type="directional">
+      <pose>1 0 1.5 0 0 -0.3</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.2</intensity>
+      <direction>-0.5 0 -0.5</direction>
+      <diffuse>0.85 0.85 0.85 1</diffuse>
+    </light>
+
+    <!-- Ambient fill from below (to reduce harsh shadows on instrument bottoms) -->
+    <light name="below_fill" type="directional">
+      <pose>0 0 -1 0 0 3.14</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.2</intensity>
+      <direction>0 0 1</direction>
+      <diffuse>0.7 0.7 0.7 1</diffuse>
+    </light>
+
+    <!-- Optional: Warm accent light for depth perception -->
+    <light name="warm_accent" type="directional">
+      <pose>0.5 0.5 2 0 0.2 0.5</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.2</intensity>
+      <diffuse>1 0.95 0.85 1</diffuse>
+    </light>
+
+    <!-- apalah king -->
+    <!-- Surgical light - point light for more realistic illumination -->
+    <!-- <light name="surgical_light" type="point">
+      <pose>0 0.3 2.2 0 0 0</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.75</intensity>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.7 0.7 0.7 1</specular>
+      <attenuation>
+        <range>5</range>
+        <linear>0.1</linear>
+        <constant>0.5</constant>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+    </light> -->
+
+    <!-- Secondary surgical light for shadowless effect -->
+    <!-- <light name="surgical_light_secondary" type="point">
+      <pose>0 -0.2 2.2 0 0 3.14</pose>
+      <cast_shadows>false</cast_shadows>
+      <intensity>0.5</intensity>
+      <diffuse>0.95 0.95 0.95 1</diffuse>
+      <attenuation>
+        <range>5</range>
+        <linear>0.1</linear>
+        <constant>0.5</constant>
+      </attenuation>
+    </light> -->
+  </world>
+</sdf>
