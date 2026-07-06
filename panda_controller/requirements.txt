@@ -1,0 +1,5 @@
+ament_index_python==1.4.1
+launch_ros==0.19.13
+rclpy==3.3.21
+sensor_msgs==4.9.1
+trajectory_msgs==4.9.1

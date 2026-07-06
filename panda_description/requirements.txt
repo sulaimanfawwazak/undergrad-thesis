@@ -1,0 +1,8 @@
+ament_index_python==1.4.1
+charminal==1.1.0
+gazebo_msgs==3.9.0
+geometry_msgs==4.9.1
+launch_ros==0.19.13
+rclpy==3.3.21
+ros_gz_interfaces==0.244.23
+tf_transformations==1.1.1

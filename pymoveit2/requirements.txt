@@ -1,0 +1,15 @@
+action_msgs==1.2.2
+charminal==1.1.0
+control_msgs==4.8.0
+geometry_msgs==4.9.1
+moveit_msgs==2.2.1
+numpy==1.21.5
+rcl_interfaces==1.2.2
+rclpy==3.3.21
+sensor_msgs==4.9.1
+shape_msgs==4.9.1
+std_msgs==4.9.1
+std_srvs==4.9.1
+tf_transformations==1.1.1
+trajectory_msgs==4.9.1
+trimesh==4.12.2
